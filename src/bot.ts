@@ -216,6 +216,10 @@ bot.api.setMyCommands([
     command: "effect",
     description: "Apply text effects on the text. (usage: /effect [text])",
   },
+  {
+    command: "check_status",
+    description: "Check Status of evernode host",
+  },
 ]);
 
 // Handle all other messages and the /start command
