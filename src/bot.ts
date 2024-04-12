@@ -43,7 +43,7 @@ async function main(ctx:any) {
     for (const address of addresses) {
       await governorClient.getHostInfo(address).then((result:any) => {
         i = i + 1
-        if (result["active"] == true){
+        if (result["active"] == false){
           not_active_address.push(address)
           not_active = not_active + 1
         }
