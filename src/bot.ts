@@ -1,5 +1,5 @@
 import { Bot, InlineKeyboard, webhookCallback } from "grammy";
-import { chunk } from "lodash";
+import { add, chunk } from "lodash";
 import express from "express";
 import { applyTextEffect, Variant } from "./textEffects";
 
@@ -13,48 +13,55 @@ const evernode = require("evernode-js-client");
 // Handle the /yo command to greet the user
 bot.command("yo", (ctx) => ctx.reply(`Yo ${ctx.from?.username}`));
 
-bot.command("start", async (ctx) => {main(ctx.msgId)});
-async function main(chatId) {
-  await bot.api.sendMessage(chatId, "Hi!");
-}
-// async function main(chatId) {
-//   let active = 0
-//   let not_active = 0
-//   try {
-//     // Use a singleton xrplApi for all tests.
-//     await evernode.Defaults.useNetwork('mainnet');
-//     const xrplApi = new evernode.XrplApi(null, { autoReconnect: false });
-//     evernode.Defaults.set({
-//       xrplApi: xrplApi,
-//       useCentralizedRegistry: true // Conent to use centralized registry functions.
-//     });
-//     await xrplApi.connect();
-//     const governorClient = await evernode.HookClientFactory.create(evernode.HookTypes.governor);
-//     await governorClient.connect();
-//     bot.sendMessage(chatId,"Connected checking host");
-//     var total = 0
-//     var i = 0
-//     for (const address of addresses) {
-//       await governorClient.getHostInfo(address).then((result) => {
-//         i = i + 1
-//         if (result["active"] == false){
-//           bot.sendMessage(chatId,"something went wrong pls check" + address)
-//           not_active = not_active + 1
-//         }
-//         else{
-//           active = active + 1
-//         }
-//       })
-//         .catch((error) => {
-//           console.error(error); // This will be called if the promise is rejected
-//         });
-//     }
-//     } catch (e) {
-//       console.log(e)
-//     }
-//     bot.sendMessage(chatId,"active host : " + active.toString())
-//     bot.sendMessage(chatId,"not active host : " + not_active.toString())
-//   }
+bot.command("check_status", async (ctx) => {
+  await ctx.reply("Connecting to Server");
+  main(ctx)
+});
+
+// async function main(ctx:any) {
+//   console.log(chatId)
+//   await ctx.reply("partY");
+// }
+async function main(ctx:any) {
+  let active = 0
+  let not_active = 0
+  let not_active_address:any[] = []
+  try {
+    // Use a singleton xrplApi for all tests.
+    await evernode.Defaults.useNetwork('mainnet');
+    const xrplApi = new evernode.XrplApi(null, { autoReconnect: false });
+    evernode.Defaults.set({
+      xrplApi: xrplApi,
+      useCentralizedRegistry: true // Conent to use centralized registry functions.
+    });
+    await xrplApi.connect();
+    const governorClient = await evernode.HookClientFactory.create(evernode.HookTypes.governor);
+    await governorClient.connect();
+    await ctx.reply("Connected checking host");
+    var total = 0
+    var i = 0
+    for (const address of addresses) {
+      await governorClient.getHostInfo(address).then((result:any) => {
+        i = i + 1
+        if (result["active"] == true){
+          not_active_address.push(address)
+          not_active = not_active + 1
+        }
+        else{
+          active = active + 1
+        }
+      })
+        .catch((error:any) => {
+          console.error(error); // This will be called if the promise is rejected
+        });
+    }
+    } catch (e) {
+      console.log(e)
+    }
+    await ctx.reply("active host : " + active.toString())
+    await ctx.reply("not active host : " + not_active.toString())
+    await ctx.reply("not active address : " + not_active_address.toString())
+  }
 
 // Handle the /effect command to apply text effects using an inline keyboard
 type Effect = { code: TextEffectVariant; label: string };
