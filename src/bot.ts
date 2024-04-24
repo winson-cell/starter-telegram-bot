@@ -12,11 +12,55 @@ const client = new MongoClient(mongo_uri);
 
 const schedule = require("node-schedule");
 let job:any;
+
+// let date_time = new Date();
+
+// // get current date
+// // adjust 0 before single digit date
+// let date = ("0" + date_time.getDate()).slice(-2);
+
+// // get current month
+// let month = ("0" + (date_time.getMonth() + 1)).slice(-2);
+
+// // get current year
+// let year = date_time.getFullYear();
+
+// // get current hours
+// let hours = date_time.getHours();
+
+// // get current minutes
+// let minutes = date_time.getMinutes();
+
+// // get current seconds
+// let seconds = date_time.getSeconds();
+
+// // prints date & time in YYYY-MM-DD HH:MM:SS format
+// console.log(year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds);
 // job = schedule.scheduleJob('1 */1 * * *', () => {
+
 // bot.command("start1", async (ctx) => {
+//     let new_msg = false
+//     let message_id:any = 0
 //     job = schedule.scheduleJob('*/5 * * * * *', () => {
+
+//       if (new_msg == false){
+//         new_msg = true
+//         ctx.reply('hello').then(result => message_id = result.message_id);
+//       }
+//       else{
+//         console.log(message_id)
+//         console.log(message_id[0])
+//         console.log(message_id.message_id)
+  
 //         console.log("hello")
-//         ctx.reply("Connecting to Server");
+//         ctx.api.editMessageText(
+//           ctx.chat.id,
+//           message_id,
+//           "Done! \n nice",
+//         );
+//         // ctx.editMessageText()
+//       }
+      
 //     });
 // });
 
@@ -32,16 +76,23 @@ bot.command("stop_job", async (ctx) => {
 bot.command("yo", (ctx) => ctx.reply(`Yo ${ctx.from?.username}`));
 
 bot.command("check_status_boss_job", async (ctx) => {
-  await ctx.reply("Running Job Every Hour");
+
+  const message = await ctx.reply("Running Job Every Hour");
+  const message_ID = message.message_id
+  // const message = await ctx.reply("Connecting to Server");
+  // const message_ID = message.message_id
+  // console.log(message.message_id)
+  // '*/5 * * * * *'
+  // 1 */1 * * *
   job = schedule.scheduleJob('1 */1 * * *', () => {
-    ctx.reply("Connecting to Server");
-    main(ctx, addresses_boss)
+    // console.log("0hi")
+    main(ctx, addresses_boss,message_ID)
   })
 });
 
 bot.command("check_status_boss", async (ctx) => {
   await ctx.reply("Connecting to Server");
-  main(ctx, addresses_boss)
+  // main(ctx, addresses_boss)
 });
 
 bot.command("add_account", async (ctx :any) => {
@@ -108,7 +159,7 @@ bot.command("check_address", async (ctx :any) => {
   }
   // console.log(message_address)
   await ctx.reply("Connecting to Server");
-  main(ctx, message_address)
+  // main(ctx, message_address)
 });
 
 
@@ -116,7 +167,26 @@ bot.command("check_address", async (ctx :any) => {
 //   console.log(chatId)
 //   await ctx.reply("partY");
 // }
-async function main(ctx:any, addresses:any) {
+async function main(ctx:any, addresses:any, message_ID:any) {
+
+  let date_time = new Date();
+  // get current date
+  // adjust 0 before single digit date
+  let date = ("0" + date_time.getDate()).slice(-2);
+  // get current month
+  let month = ("0" + (date_time.getMonth() + 1)).slice(-2);
+  // get current year
+  let year = date_time.getFullYear();
+  // get current hours
+  let hours = date_time.getHours();
+  // get current minutes
+  let minutes = date_time.getMinutes();
+  // get current seconds
+  let seconds = date_time.getSeconds();
+
+  // prints date & time in YYYY-MM-DD HH:MM:SS format
+  const time_now = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
+
   let active = 0
   let not_active = 0
   let not_active_address:any[] = []
@@ -131,11 +201,13 @@ async function main(ctx:any, addresses:any) {
     await xrplApi.connect();
     const governorClient = await evernode.HookClientFactory.create(evernode.HookTypes.governor);
     await governorClient.connect();
-    await ctx.reply("Connected checking host");
+    // console.log("connected")
+    // await ctx.reply("Connected checking host");
     var total = 0
     var i = 0
     for (const address of addresses) {
       await governorClient.getHostInfo(address).then((result:any) => {
+        // console.log("calculating")
         i = i + 1
         if (result["active"] == false){
           not_active_address.push(address)
@@ -153,9 +225,17 @@ async function main(ctx:any, addresses:any) {
       console.log(e)
       await ctx.reply("error when connecting to the address")
     }
-    await ctx.reply("active host : " + active.toString())
-    await ctx.reply("not active host : " + not_active.toString())
-    await ctx.reply("not active address : " + not_active_address.toString())
+    ctx.api.editMessageText(
+        ctx.chat.id,
+        message_ID,
+        "active host : " + active.toString() + "\nTime now: " + time_now,
+    );
+    if (not_active > 0){
+      await ctx.reply("not active host : " + not_active.toString())
+      await ctx.reply("not active address : " + not_active_address.toString())
+    }
+    // await ctx.reply("active host : " + active.toString())
+
   }
 
 
