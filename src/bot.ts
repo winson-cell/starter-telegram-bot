@@ -185,7 +185,7 @@ async function main(ctx:any, addresses:any, message_ID:any) {
   let seconds = date_time.getSeconds();
 
   // prints date & time in YYYY-MM-DD HH:MM:SS format
-  const time_now = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
+  let time_now = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
 
   let active = 0
   let not_active = 0
