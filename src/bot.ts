@@ -169,7 +169,12 @@ bot.command("check_address", async (ctx :any) => {
 // }
 async function main(ctx:any, addresses:any, message_ID:any) {
 
-  let date_time = new Date();
+  let d = new Date();
+  // change to UTC
+  let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+  // change to UTC +8
+  let date_time = new Date(utc + (3600000*8));
+  // let date_time = new Date();
   // get current date
   // adjust 0 before single digit date
   let date = ("0" + date_time.getDate()).slice(-2);
