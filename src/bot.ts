@@ -68,6 +68,7 @@ bot.command("stop_job", async (ctx) => {
   if (job) {
         job.cancel()
         console.log("cancelled job")
+        await ctx.reply("cancelled job");
     }
 });
 
@@ -82,7 +83,7 @@ bot.command("check_status_boss_job", async (ctx) => {
   // const message = await ctx.reply("Connecting to Server");
   // const message_ID = message.message_id
   // console.log(message.message_id)
-  // '*/5 * * * * *'
+  // '*/1 * * * *'
   // 1 */1 * * *
   job = schedule.scheduleJob('1 */1 * * *', () => {
     // console.log("0hi")
@@ -90,10 +91,26 @@ bot.command("check_status_boss_job", async (ctx) => {
   })
 });
 
-bot.command("check_status_boss", async (ctx) => {
-  await ctx.reply("Connecting to Server");
-  // main(ctx, addresses_boss)
-});
+
+// bot.command("check_status_boss_job", async (ctx) => {
+
+//   const message = await ctx.reply("Running Job Every Hour");
+//   const message_ID = message.message_id
+//   // const message = await ctx.reply("Connecting to Server");
+//   // const message_ID = message.message_id
+//   // console.log(message.message_id)
+//   // '*/5 * * * * *'
+//   // 1 */1 * * *
+//   job = schedule.scheduleJob('1 */1 * * *', () => {
+//     // console.log("0hi")
+//     main(ctx, addresses_boss,message_ID)
+//   })
+// });
+
+// bot.command("check_status_boss", async (ctx) => {
+//   await ctx.reply("Connecting to Server");
+//   // main(ctx, addresses_boss)
+// });
 
 bot.command("add_account", async (ctx :any) => {
   await ctx.reply("adding account");
