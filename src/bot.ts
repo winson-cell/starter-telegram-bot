@@ -242,7 +242,7 @@ async function main(ctx:any, addresses:any, message_ID:any) {
           console.error(error); // This will be called if the promise is rejected
         });
     }
-    await governorClient.disconect()
+    await governorClient.disconnect()
     } catch (e) {
       console.log(e)
       await ctx.reply("error when connecting to the address")
