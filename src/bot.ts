@@ -225,7 +225,6 @@ async function main(ctx:any, addresses:any, message_ID:any) {
     await governorClient.connect();
     // console.log("connected")
     // await ctx.reply("Connected checking host");
-    var total = 0
     var i = 0
     for (const address of addresses) {
       await governorClient.getHostInfo(address).then((result:any) => {
@@ -243,6 +242,7 @@ async function main(ctx:any, addresses:any, message_ID:any) {
           console.error(error); // This will be called if the promise is rejected
         });
     }
+    await governorClient.disconect()
     } catch (e) {
       console.log(e)
       await ctx.reply("error when connecting to the address")
@@ -257,7 +257,6 @@ async function main(ctx:any, addresses:any, message_ID:any) {
       await ctx.reply("not active address : " + not_active_address.toString())
     }
     // await ctx.reply("active host : " + active.toString())
-
   }
 
 
